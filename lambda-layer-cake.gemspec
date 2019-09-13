@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.description = "A set of Rake tasks to bundle Rails apps for use on AWS Lambda"
   spec.license     = "MIT"
 
-  spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  spec.files = Dir["{app,config,db,lib,build_env}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rails'

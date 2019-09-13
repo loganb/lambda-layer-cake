@@ -25,5 +25,12 @@ LambdaLayerCake simply bundles the Rails directory into app.zip, excluding files
 
 This is my first attempt at publishing a complete gem and Rails plugin. I took it as an opportunity to learn and write idiomatic Rakefiles, automate usage of Docker, etc. Suggestions on how to improve the structure of any of the moving pieces is most welcome, pull requests are even better. Please open an issue. 
 
+## TODO
+
+Contributions on the following items is particularly appreciated: 
+
+* Modifying the Docker build environment to probe the host system's cache of gemfiles to more gracefully handle private and unreleased gems
+* A `clean` Rake task
+
 ## License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
