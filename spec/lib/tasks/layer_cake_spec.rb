@@ -1,10 +1,14 @@
 require 'open3'
+require 'zip'
 
 describe "tasks" do
   around(:each) do |example|
     Bundler.with_clean_env do
       old_dir = Dir.pwd
       Dir.chdir(DUMMY_RAILS_DIR)
+
+      result, status = Open3.capture2({"BUNDLE_GEMFILE" => 'Gemfile.test'}, 'rake layer_cake:clean')
+
       example.run
       Dir.chdir(Dir.pwd)
     end
@@ -30,6 +34,18 @@ describe "tasks" do
     it "creates an app.zip" do
       result, status = Open3.capture2({"BUNDLE_GEMFILE" => 'Gemfile.test'}, 'rake .layer_cake/app.zip')
       expect(File.exists?(".layer_cake/app.zip")).to be true
+    end
+
+    it "symlinks tmp & vendor/bundle directory that is a symlink" do
+      result, status = Open3.capture2({"BUNDLE_GEMFILE" => 'Gemfile.test'}, 'rake .layer_cake/app.zip')
+
+      zf = Zip::File.new('.layer_cake/app.zip')
+
+      ['tmp', 'vendor/bundle'].each do |file|
+        tmpdir = zf.entries.find { |e| e.name == file }
+        expect(tmpdir).not_to be_nil, "expected to find file #{file}"
+        expect(tmpdir.ftype).to be(:symlink)
+      end
     end
   end
 end
