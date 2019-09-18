@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lambda-layer-cake (0.1.0)
+    lambda-layer-cake (0.1.1)
 
 GEM
   remote: https://rubygems.org/

@@ -9,10 +9,31 @@ This gem does just the packaging of the app and leaves deployment as an exercise
 ## Usage
 
 1. Include Lamby and this gem in your Rails app's Gemfile.
-1. Create an `app.rb` in the root of your project per Lamby instructions to implement a Lambda handler. 
+
+  gem 'lambda-layer-cake'
+  gem 'lamby'
+
+1. Create an `app.rb` in the root of your project that contains (stock Lamby app.rb with an extra line for Bundler config): 
+
+```ruby
+# This line tells Bundler where the Layer Cake gems are located
+ENV['BUNDLE_PATH'] = 'vendor/bundle/ruby/2.5.0'
+
+require_relative 'config/boot'
+require 'lamby'
+require_relative 'config/application'
+require_relative 'config/environment'
+
+$app = Rack::Builder.new { run Rails.application }.to_app
+
+def handler(event:, context:)
+  Lamby.handler $app, event, context, rack: :api
+end
+```
+
 1. If you need extra system packages (such as `postgresql-libs` for the `pg` gem), create a file called `system-packages.txt` in the root of your Rails project and include package names, one per line. 
 1. When you are ready to deploy your app, use `rake .layer_cake/layer.zip` and `rake .layer_cake/app.zip` to build files suitable for deployment to Lambda. 
-1. Use the the demployment tools of your choice to deploy the app. 
+1. Use the the demployment tools of your choice to define a Lambda function. The `layer.zip`  
 
 
 ## How It Works
@@ -30,7 +51,9 @@ This is my first attempt at publishing a complete gem and Rails plugin. I took i
 Contributions on the following items is particularly appreciated: 
 
 * Modifying the Docker build environment to probe the host system's cache of gemfiles to more gracefully handle private and unreleased gems
-* A `clean` Rake task
+* Give proper names to the rake tasks
+* A better `clean` Rake task
+* Under some circumstances, `app.zip` does rebuild due to not detecting dependencies
 
 ## License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
