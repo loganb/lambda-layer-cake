@@ -67,6 +67,7 @@ module LambdaLayerCake
         system(*cmd) or raise
         
         #Insert a symlink into the app.zip
+        FileUtils.rm_r(working_dir("app/"), noop: true)
         FileUtils.mkdir_p(working_dir("app/vendor"))
         FileUtils.ln_s("/tmp", working_dir("app/tmp"))
         FileUtils.ln_s("/opt/bundle", working_dir("app/vendor/bundle"), force: true)
