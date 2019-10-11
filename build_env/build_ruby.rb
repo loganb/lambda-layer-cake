@@ -68,7 +68,7 @@ def main
 
   #This directory is not needed at runtime
   STDERR.puts("Removing extra files")
-  FileUtils.rm_rf("/tmp/outputs/bundle/ruby/2.5.0/cache")
+  FileUtils.rm_rf("/tmp/build/bundle/ruby/2.5.0/cache")
 
   STDERR.puts("Moving Bundle into place")
   FileUtils.cp_r("/tmp/build/bundle", "/tmp/outputs")
