@@ -26,7 +26,7 @@ module LambdaLayerCake
         -v #{inputs_dir}:/tmp/inputs 
         -v #{outputs_dir}:/tmp/outputs 
         -v #{File.expand_path(__dir__ + "/../../build_env")}:/var/task 
-        lambci/lambda:build-ruby2.5 ruby build_ruby.rb}
+        lambci/lambda:#{docker_tag} ruby build_ruby.rb}
       STDERR.puts("Excuting cmd: #{cmd.join(' ')}")
       system(*cmd) or raise    
     end
@@ -55,7 +55,7 @@ module LambdaLayerCake
       desc "Build the current layer version and symlink it to the versioned zip"
       file ".layer_cake/layer.zip": ".layer_cake/layer-#{input_hash}.zip" do
         FileUtils.ln_s("layer-#{input_hash}.zip",".layer_cake/layer.zip", force: true)
-      end    
+      end
     end
 
     def app_task_definitions!
@@ -81,7 +81,13 @@ module LambdaLayerCake
       desc "Output the version hash for the current input files (Gemfile, Gemfile.lock, system-packages.txt)"
       task :version do
         $stdout.write input_hash
-      end    
+      end
+
+      desc "Reports the ruby version of the lambda environment"
+      task :ruby_version do
+        $stdout.write ruby_version
+      end
+
     end
 
     def clean_task_definitions!
@@ -117,6 +123,20 @@ module LambdaLayerCake
           path_suffix
         )
       )
+    end
+
+    def docker_tag
+      "build-ruby#{/^\d+\.\d+/.match(RUBY_VERSION)[0]}"
+    end
+
+    def ruby_version
+      cmd = %W{docker run --rm
+        -v #{inputs_dir}:/tmp/inputs 
+        -v #{outputs_dir}:/tmp/outputs 
+        -v #{File.expand_path(__dir__ + "/../../build_env")}:/var/task 
+        lambci/lambda:#{docker_tag} ruby -e }.push '$stdout.write RUBY_VERSION'
+      STDERR.puts("Excuting cmd: #{cmd.join(' ')}")
+      system(*cmd) or raise
     end
   end
 end

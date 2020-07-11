@@ -12,6 +12,7 @@ unless(File.exist? DUMMY_RAILS_DIR)
   system('rails new --skip-javascript --skip-sprockets .') or raise
   gemfile_contents = IO.read("Gemfile")
   IO.write("Gemfile.test", gemfile_contents + "\ngem 'lambda-layer-cake', path: '../../'\n", mode: 'a')
+  IO.write("system-packages.txt", "sqlite-devel")
   Dir.chdir(curpwd)  
 end
 # #Boot Rails

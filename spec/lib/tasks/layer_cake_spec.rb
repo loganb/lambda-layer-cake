@@ -23,6 +23,13 @@ describe "tasks" do
     end
   end
 
+  describe "layer_cake:ruby_version" do
+    it "outputs a the ruby version" do
+      result, status = Open3.capture2({"BUNDLE_GEMFILE" => 'Gemfile.test'}, 'rake layer_cake:ruby_version')
+      expect(result).to match(/\d+\.\d+\.\d+/)
+    end
+  end
+
   describe ".layer_cake/layer.zip" do
     it "creates a layer.zip" do
       result, status = Open3.capture2({"BUNDLE_GEMFILE" => 'Gemfile.test'}, 'rake .layer_cake/layer.zip')

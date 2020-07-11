@@ -18,6 +18,7 @@ def main
   if(File.exist?('system-packages.txt'))
     STDERR.puts("Installing System Packages")
     build_deps = File.read("system-packages.txt").split
+    STDERR.puts("Packages: #{build_deps.join(',')}")
     unless(system("yum", "install", "-y", *(build_deps)))
       STDERR.puts("Could not install build dependency pacakges")
       exit 2
@@ -67,7 +68,7 @@ def main
   FileUtils.cp(libs.to_a, '/tmp/outputs/lib')
 
   #This directory is not needed at runtime
-  STDERR.puts("Removing extra files")
+  STDERR.puts("Removing extra files (skipping)")
   FileUtils.rm_rf("/tmp/build/bundle/ruby/2.5.0/cache")
 
   STDERR.puts("Moving Bundle into place")
