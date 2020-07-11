@@ -27,7 +27,7 @@ def main
 
   STDERR.puts("Building Gems")
   FileUtils.mkdir_p("/tmp/build/bundle")
-  unless(system("bundle","install","--deployment","--path=/tmp/build/bundle"))
+  unless(system("bundle","install","--deployment","--path=/tmp/build/bundle","--without","test","development"))
     STDERR.puts("Couldn't build gems")
     exit 3
   end
@@ -68,8 +68,9 @@ def main
   FileUtils.cp(libs.to_a, '/tmp/outputs/lib')
 
   #This directory is not needed at runtime
-  STDERR.puts("Removing extra files (skipping)")
-  FileUtils.rm_rf("/tmp/build/bundle/ruby/2.5.0/cache")
+  STDERR.puts("Removing extra files")
+  FileUtils.rm_rf(Dir["/tmp/build/bundle/ruby/*/cache"])
+  FileUtils.rm_rf(Dir["/tmp/build/bundle/ruby/*/gems/*/test"])
 
   STDERR.puts("Moving Bundle into place")
   FileUtils.cp_r("/tmp/build/bundle", "/tmp/outputs")
